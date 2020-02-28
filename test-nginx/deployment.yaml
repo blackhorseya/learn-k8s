@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-nginx-app
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: test-nginx-app
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: test-nginx-app
+    spec:
+      containers:
+      - name: test-nginx-app
+        image: nginx:alpine
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - mountPath: "/usr/share/nginx/html"
+            name: apache-www
+      volumes:
+      - name: apache-www
+        persistentVolumeClaim:
+          claimName: test-nginx-pvc
